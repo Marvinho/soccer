@@ -83,4 +83,4 @@ for buli_cl_team in [*buli_cl_teams]:
 
 df = pd.DataFrame.from_records(zugaenge, columns=["Name","Position","Alter","Marktwert","Abgebender-Verein","Abgebende-Liga","Ablöse","Saison","Aufnehmender-Verein"])
 print(df)
-df.to_csv("C:/Users/Marvin/Desktop/Portfolio/soccer/bayernkaputtkauf/buli-cl-teams-zugaenge.csv", index=False)
+# df.to_csv("C:/Users/Marvin/Desktop/Portfolio/soccer/bayernkaputtkauf/buli-cl-teams-zugaenge.csv", index=False)

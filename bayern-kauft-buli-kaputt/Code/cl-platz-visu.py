@@ -4,6 +4,8 @@ from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 from PIL import Image
 import numpy as np
 
+abs_path = "C:/Users/Marvin/Desktop/Portfolio/soccer/buli-logos/"
+
 title_font = "Alegreya Sans"
 body_font = "Open Sans"
 textColor = "w"
@@ -55,7 +57,7 @@ for s in spines:
 
 path = "../buli-logos/fcb2.png"
 for keys, values in buliTabPlaetze.items():
-    path = path = "../buli-logos/"+keys+".png"
+    path = abs_path + keys+".png"
     for x0, y0 in zip(x, values):
         ab = AnnotationBbox(getImage(path), (x0, y0), frameon=False)
         ax.add_artist(ab)
