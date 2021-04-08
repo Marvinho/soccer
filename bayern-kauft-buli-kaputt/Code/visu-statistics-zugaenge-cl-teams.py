@@ -8,11 +8,12 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import numpy as np
-
+from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 abs_path = "C:/Users/Marvin/Desktop/Portfolio/soccer/bayern-kauft-buli-kaputt/buli-cl-teams-zugaenge.csv"
+img_base_path = "C:/Users/Marvin/Desktop/Portfolio/soccer/buli-logos/"
 
 df = pd.read_csv(abs_path)
-
+df = df.loc[df["Saison"] != 2021]
 de_liga = ["Bundesliga", "2. Bundesliga"]
 de_liga2 = ["Bundesliga", "2. Bundesliga", "3. Liga","A-Junioren Bundesliga Nord/Nordost","A-Junioren Bundesliga Süd/Südwest","A-Junioren Bundesliga West","Regionalliga West (bis 11/12)",
             "Regionalliga West","Regionalliga Südwest","Regionalliga Nord (bis 11/12)","Regionalliga Nord","Regionalliga Bayern"]
@@ -66,11 +67,16 @@ def anzahl_zugaenge_buli(df):
     ax.bar(x=team_list, height=anz2, bottom=anz1, label='2.Bundesliga',zorder=2)
     # ax.scatter(x, y, s=120, color=filler, edgecolors=background, alpha=0.3, lw=0.5, zorder=2)           
     
-    ax.set_xlabel("Vereine", fontfamily=title_font, fontweight="bold", fontsize=12, color=textColor)
+    ax.set_xlabel("Aufnehmender Verein", fontfamily=title_font, fontweight="bold", fontsize=12, color=textColor)
     ax.set_ylabel("Anzahl Spieler", fontfamily=title_font, fontweight="bold", fontsize=12, color=textColor)
     
     # ax.tick_params(axis="both",length=3)
-    
+        
+    for x0,j in enumerate(team_list):
+        path = img_base_path + j+".png"
+        ab = AnnotationBbox(OffsetImage(plt.imread(path),zoom=0.1), (x0, 2), frameon=False)
+        #(zoom=0.15), (0.4,0.5), frameon=False)
+        ax.add_artist(ab)
     # ax_ranges = [0, 65000000]
     # ax.set_xlim(ax_ranges)
     # ax.set_ylim(ax_ranges)
@@ -95,15 +101,18 @@ def anzahl_zugaenge_buli(df):
     # for i,name in enumerate(labels):
     #     t = ax.text(x[i],y[i]-1000000,labels[i],color=textColor,fontsize=12, ha="center", fontfamily=body_font)
         
-    ax.set_title("Zugänge von Spielern aus Vereinen der Bundesliga/2.Bundesliga", fontsize=14, fontweight="bold", color = textColor)
-    fig.text(0.7, -0.01, "Stand 06.04.2021 / Created by Marvin Springer",
+    ax.set_title("Zugänge aus Vereinen der Bundesliga/2.Bundesliga 10/11 - 20/21", fontsize=14, fontweight="bold", color = textColor)
+    fig.text(0.7, -0.01, "Created by Marvin Springer / Data by transfermarkt.de",
         fontstyle="italic",fontsize=8, fontfamily=body_font, color=textColor)
 
     plt.tight_layout()
     plt.show()
-anzahl_zugaenge_buli(anzahl_zugaenge)
+# anzahl_zugaenge_buli(anzahl_zugaenge)
+x_de = sum_marktwert_ablöse_zugaenge_de["Marktwert"].tolist()
+y_de = sum_marktwert_ablöse_zugaenge_de["Ablöse"].tolist()
+names_de = sum_marktwert_ablöse_zugaenge_de.index.tolist()
 
-def make_scatter_plot(x, y, labels):
+def scatter_plot_mw_abloese(x, y, labels):
     fig, ax = plt.subplots(figsize=(8,8))
     fig.set_facecolor(background)
     ax.patch.set_facecolor(background)
@@ -111,23 +120,29 @@ def make_scatter_plot(x, y, labels):
 
     
     ax.grid(ls="dotted",lw="0.5",color="lightgrey", zorder=1)
-    ax.scatter(x, y, s=120, color=filler, edgecolors=background, alpha=0.3, lw=0.5, zorder=2)           
+    ax.scatter(x, y, s=120, color=filler, edgecolors=background, alpha=0.3, lw=0.5, zorder=2)
+    for x, y, j in zip(x, y, team_list):
+        path = img_base_path + j+".png"
+        ab = AnnotationBbox(OffsetImage(plt.imread(path),zoom=0.05), (x, y), frameon=False)
+        #(zoom=0.15), (0.4,0.5), frameon=False)
+        ax.add_artist(ab)
+        t = ax.text(x,y+20000000,j,color=textColor,fontsize=12, ha="center", fontfamily=body_font)
     
     ax.set_xlabel("Marktwert (in €)", fontfamily=title_font, fontweight="bold", fontsize=16, color=textColor)
     ax.set_ylabel("Ablöse (in €)", fontfamily=title_font, fontweight="bold", fontsize= 16, color=textColor)
     
     ax.tick_params(axis="both",length=3)
     
-    ax_ranges = [0, 65000000]
+    ax_ranges = [0, 450000000]
     ax.set_xlim(ax_ranges)
     ax.set_ylim(ax_ranges)
     ax.plot(ax.get_xlim(), ax.get_ylim(), ls="--", c=textColor)
     ax.set_ylim(ax.get_ylim()[::-1])
     
-    # xlabels = ['{:,.0f}'.format(x) + ' Mio.' for x in ax.get_xticks()/1000000]
-    # ax.set_xticklabels(xlabels)
-    # ylabels = ['{:,.0f}'.format(y) + ' Mio.' for y in ax.get_xticks()/1000000]
-    # ax.set_yticklabels(ylabels)
+    xlabels = ['{:,.0f}'.format(x) + ' Mio.' for x in ax.get_xticks()/1000000]
+    ax.set_xticklabels(xlabels)
+    ylabels = ['{:,.0f}'.format(y) + ' Mio.' for y in ax.get_xticks()/1000000]
+    ax.set_yticklabels(ylabels)
     
     ax = plt.gca()
     
@@ -138,26 +153,14 @@ def make_scatter_plot(x, y, labels):
             ax.spines[s].set_visible(False)
         else:
             ax.spines[s].set_color(textColor)
-    
-    for i,name in enumerate(labels):
-        t = ax.text(x[i],y[i]-1000000,labels[i],color=textColor,fontsize=12, ha="center", fontfamily=body_font)
         
-    fig.text(0.13,1.02,"Überschrift", fontsize=14, fontweight="bold", color = textColor)
-    fig.text(0.05, -0.025, "Created by Marvin Springer / Data by transfermarkt.de",
-        fontstyle="italic",fontsize=9, fontfamily=body_font, color=textColor)
+    ax.set_title("Summierter Marktwert/Ablöse für Zugänge \naus Vereinen der Bundesliga/2.Bundesliga 10/11 - 20/21", fontsize=14, fontweight="bold", color = textColor)
+    fig.text(0.6, -0.01, "Created by Marvin Springer / Data by transfermarkt.de",
+        fontstyle="italic",fontsize=8, fontfamily=body_font, color=textColor)
 
     plt.tight_layout()
     plt.show()
 
 #marktwert-ablöse-vereine
-x_de = sum_marktwert_ablöse_zugaenge_de["Marktwert"].tolist()
-y_de = sum_marktwert_ablöse_zugaenge_de["Ablöse"].tolist()
-names_de = sum_marktwert_ablöse_zugaenge_de.index.tolist()
-make_scatter_plot(x_de, y_de, names_de)
-
-#marktwert-ablöse-spieler
-x_player = de_zugaenge["Marktwert"].tolist()
-y_player = de_zugaenge["Ablöse"].tolist()
-names_player = de_zugaenge["Name"].tolist()
-make_scatter_plot(x_player, y_player, names_player)
+scatter_plot_mw_abloese(x_de, y_de, names_de)
 

@@ -2,22 +2,22 @@ import pandas as pd
 import matplotlib as mpl 
 import matplotlib.pyplot as plt
 import numpy as np
-
+from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 from PIL import Image
 
-df = pd.read_csv("bayern-zugang.csv")
+df = pd.read_csv("C:/Users/Marvin/Desktop/Portfolio/soccer/bayern-kauft-buli-kaputt/bayern-zugang.csv")
 
 
-df_buli = df[df["Liga"] == "Bundesliga"]
-df_buli_transfers = df_buli[df_buli["Transfer-Art"]=="Transfer"]
-df_buli_transfers = pd.read_csv("fcb-buli-transfer-zugaenge.csv")
-
+# df_buli = df[(df["Liga"] == "Bundesliga") & (df["Saison"] != "21/22")]
+# df_buli_transfers = df_buli[df_buli["Transfer-Art"]=="Transfer"]
+df_buli_transfers = pd.read_csv("C:/Users/Marvin/Desktop/Portfolio/soccer/bayern-kauft-buli-kaputt/fcb-buli-transfer-zugaenge.csv")
+df_buli_transfers = df_buli_transfers[(df_buli_transfers["Saison"] != "21/22")]
 x = df_buli_transfers["Marktwert"].tolist()
 y = df_buli_transfers["Ablöse"].tolist()
 names = df_buli_transfers["Name"].tolist()
 
 
-ax_ranges = [-1000000, 61000000]
+ax_ranges = [-1000000, 55000000]
 team = "FC Bayern München"
 
 title_font = "Alegreya Sans"
@@ -41,11 +41,11 @@ ax.grid(ls="dotted",lw="0.5",color="lightgrey", zorder=1)
 ax.scatter(x, y, s=120, color=filler, edgecolors=background, alpha=0.3, lw=0.5, zorder=2)
 
 
-for i in [0,1,3,4,5,6,8,9,11,13,19,20]:
+for i in [0,2,3,4,5,7,8,9,10,12,18,19]:
     t = ax.text(x[i],y[i]-1000000,names[i],color=textColor,fontsize=12, ha="center", fontfamily=body_font)
 
 
-fig.text(0.13,1.02,"{}s Bundesliga Zugänge von 10/11 - 21/22".format(team), fontsize=14, fontweight="bold", color = textColor)        
+fig.text(0.13,1.02,"{}s Zugänge aus der Bundesliga, 10/11 - 20/21".format(team), fontsize=14, fontweight="bold", color = textColor)        
 
 
 ax.set_xlabel("Marktwert (in €)", fontfamily=title_font, fontweight="bold", fontsize=16, color=textColor)
@@ -74,11 +74,13 @@ for s in spines:
 
 ax2 = fig.add_axes([0,0.95,0.15,0.15]) # badge
 ax2.axis("off")
-img = Image.open("FC-Bayern-Munchen-Logo.png")
-ax2.imshow(img)
 
-fig.text(0.05, -0.025, "Created by Marvin Springer / Data by transfermarkt.de",
-        fontstyle="italic",fontsize=9, fontfamily=body_font, color=textColor)
+ab = AnnotationBbox(OffsetImage(plt.imread("C:/Users/Marvin/Desktop/Portfolio/soccer/buli-logos/fcb.png"), zoom=0.15), (0.4,0.5), frameon=False)
+ax2.add_artist(ab)
+# img = Image.open("C:/Users/Marvin/Desktop/Portfolio/soccer/buli-logos/fcb.png")
+# ax2.imshow(img)
+fig.text(0.6, -0.01, "Created by Marvin Springer / Data by transfermarkt.de",
+        fontstyle="italic",fontsize=8, fontfamily=body_font, color=textColor)
 
 plt.tight_layout()
 plt.show()
