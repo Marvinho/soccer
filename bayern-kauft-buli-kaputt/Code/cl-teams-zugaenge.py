@@ -60,8 +60,35 @@ def format_abloese_to_int(df):
         df["Ablöse"] = df["Ablöse"].astype(int)
     else:
         print("Already formatted the Ablöse")
-    
-deal_with_vereinslos(df)  
-split_abloese_to_transferart(df) 
-format_abloese_to_int(df)
-df["Ablöse"].dtype == int
+
+def format_marktwert_to_int(df, column):
+    if(df[column].dtype != int):
+        df[column] = df[column].str.replace("-","0")
+        df[column] = df[column].str.replace(",","")
+        df[column] = df[column].str.replace(" Mio. €","0000")
+        df[column] = df[column].str.replace(" Tsd. €","000")
+        df[column].fillna(0, inplace=True)
+        df[column] = df[column].astype(int)
+    else:
+        print("Already formatted the Marktwert")
+
+def fix_bundesliga_öliga(df):
+    if("Ö.Bundesliga" in df.loc["Abgebende-Liga"]):
+        ö_liga_vereine = ["Sturm Graz", "LASK", "Grödig", "SCR Altach","Austria Wien",
+                          "Rapid Wien", "SV Kapfenberg","RB Salzburg","SV Ried"]
+        df.loc[df["Abgebender-Verein"].isin(ö_liga_vereine), "Abgebende-Liga"] = "Ö." + df.loc[df["Abgebender-Verein"].isin(ö_liga_vereine), "Abgebende-Liga"]# == "Ö. Bundesliga"
+    else:
+        print("Already fixed to Ö.Liga")
+
+# bundesliga_vereine = df.loc[df["Abgebende-Liga"] == "Bundesliga"]["Abgebender-Verein"].unique()
+# zweite_liga_vereine = df.loc[df["Abgebende-Liga"] == "2. Bundesliga"]["Abgebender-Verein"].unique()
+
+
+if __name__ == "__main__":
+    deal_with_vereinslos(df)  
+    split_abloese_to_transferart(df) 
+    format_abloese_to_int(df)
+    format_marktwert_to_int(df, "Marktwert")
+    fix_bundesliga_öliga(df)
+
+# df.to_csv(abs_path)
