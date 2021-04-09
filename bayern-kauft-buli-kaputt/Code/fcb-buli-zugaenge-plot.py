@@ -41,11 +41,11 @@ ax.grid(ls="dotted",lw="0.5",color="lightgrey", zorder=1)
 ax.scatter(x, y, s=120, color=filler, edgecolors=background, alpha=0.3, lw=0.5, zorder=2)
 
 
-for i in [0,2,3,4,5,7,8,9,10,12,18,19]:
+for i in [0,2,3,5,7,8,10,12,18,19]:
     t = ax.text(x[i],y[i]-1000000,names[i],color=textColor,fontsize=12, ha="center", fontfamily=body_font)
 
 
-fig.text(0.13,1.02,"{}s Zugänge aus der Bundesliga, 10/11 - 20/21".format(team), fontsize=14, fontweight="bold", color = textColor)        
+fig.text(0.13,1.02,"{}s Zugänge aus der (2.) Bundesliga, 10/11 - 20/21".format(team), fontsize=14, fontweight="bold", color = textColor)        
 
 
 ax.set_xlabel("Marktwert (in €)", fontfamily=title_font, fontweight="bold", fontsize=16, color=textColor)

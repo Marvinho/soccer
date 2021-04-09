@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 import numpy as np
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
+from pywaffle import Waffle
+print(mpl.__version__)
 abs_path = "C:/Users/Marvin/Desktop/Portfolio/soccer/bayern-kauft-buli-kaputt/buli-cl-teams-zugaenge.csv"
 img_base_path = "C:/Users/Marvin/Desktop/Portfolio/soccer/buli-logos/"
 
@@ -39,7 +41,8 @@ mean_marktwert_ablöse_zugaenge_int = int_zugaenge.groupby(["Aufnehmender-Verein
 season_grouped_mw_ablöse_zugaenge_int = int_zugaenge.groupby(["Aufnehmender-Verein","Saison"])["Ablöse"].apply(sum)
 # print(mean_marktwert_ablöse_zugaenge) 
 
-asdf = de_zugaenge.sort_values("Ablöse")
+asdf = sum_marktwert_ablöse_zugaenge_de["Marktwert"] - sum_marktwert_ablöse_zugaenge_de["Ablöse"]
+# asdf = de_zugaenge.sort_values("Ablöse")
 
 title_font = "Alegreya Sans"
 body_font = "Open Sans"
@@ -52,6 +55,38 @@ mpl.rcParams['xtick.color'] = textColor
 mpl.rcParams['ytick.color'] = textColor
 mpl.rcParams['xtick.labelsize'] = 10
 mpl.rcParams['ytick.labelsize'] = 10
+
+def plot_differenz_mw_abloese(df):
+    fig, ax = plt.subplots(figsize=(8,8))
+    fig.set_facecolor(background)
+    ax.patch.set_facecolor(background)
+    ax.grid(axis="y", ls="dotted",lw="0.5",color="lightgrey", zorder=1)
+    colormap = ["#b3de69","#b3de69","#b3de69","#b3de69","#b3de69","#fa8174","#b3de69","#fa8174"]
+    bars = ax.bar(x=asdf.index, height=asdf.tolist(), label='Bundesliga',color=colormap ,zorder=2)
+    # ax.bar_label(bars,label_type="center", fmt='%.2f')
+    ax.set_xlabel("Aufnehmender Verein", fontfamily=title_font, fontweight="bold", fontsize=12, color=textColor)
+    ax.set_ylabel("Markwert - Ablöse (in €)", fontfamily=title_font, fontweight="bold", fontsize=12, color=textColor)
+    xlabels = [team_dict[i] for i in anz]
+    ax.set_xticklabels(xlabels)
+    ylabels = ['{:,.0f}'.format(y) + ' Mio.' for y in ax.get_yticks()/1000000]
+    ax.set_yticklabels(ylabels)
+    for x, y, j in zip(asdf.index, asdf.tolist(), team_list):
+        path = img_base_path + j+".png"
+        if(y > 0):
+            ab = AnnotationBbox(OffsetImage(plt.imread(path),zoom=0.08), (x, y-7000000), frameon=False)
+        #(zoom=0.15), (0.4,0.5), frameon=False)
+        else:
+            ab = AnnotationBbox(OffsetImage(plt.imread(path),zoom=0.08), (x, -6000000), frameon=False)
+        ax.add_artist(ab)
+    ax.set_title("Differenz Marktwert/Ablöse für Zugänge aus Vereinen \nder (2.) Bundesliga, 10/11 - 20/21", fontsize=14, fontweight="bold", color = textColor)
+    fig.text(0.6, -0.01, "Created by Marvin Springer / Data by transfermarkt.de",
+        fontstyle="italic",fontsize=8, fontfamily=body_font, color=textColor)
+    plt.tight_layout()
+    plt.show()
+    
+plot_differenz_mw_abloese(asdf)    
+
+
 
 anz = anzahl_zugaenge["Aufnehmender-Verein"].unique().tolist()
 anz1 = anzahl_zugaenge.loc[anzahl_zugaenge["Abgebende-Liga"] == "Bundesliga", "Unnamed: 0"].tolist()
@@ -154,7 +189,7 @@ def scatter_plot_mw_abloese(x, y, labels):
         else:
             ax.spines[s].set_color(textColor)
         
-    ax.set_title("Summierter Marktwert/Ablöse für Zugänge \naus Vereinen der Bundesliga/2.Bundesliga 10/11 - 20/21", fontsize=14, fontweight="bold", color = textColor)
+    ax.set_title("Summierter Marktwert/Ablöse für Zugänge aus Vereinen \nder (2.) Bundesliga, 10/11 - 20/21", fontsize=14, fontweight="bold", color = textColor)
     fig.text(0.6, -0.01, "Created by Marvin Springer / Data by transfermarkt.de",
         fontstyle="italic",fontsize=8, fontfamily=body_font, color=textColor)
 
@@ -163,4 +198,8 @@ def scatter_plot_mw_abloese(x, y, labels):
 
 #marktwert-ablöse-vereine
 scatter_plot_mw_abloese(x_de, y_de, names_de)
-
+x = np.arange(10)
+y = np.arange(10)
+p = plt.plot(x,y,x,y+1,x,y+2, x,y+3, x,y+4, x,y+5, x,y+6,x,y+7) 
+for i in range(8):
+    print(p[i].get_color())
