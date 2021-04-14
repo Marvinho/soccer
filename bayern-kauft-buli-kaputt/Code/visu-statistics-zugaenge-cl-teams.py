@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 import numpy as np
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
-from pywaffle import Waffle
+from highlight_text import HighlightText, ax_text, fig_text
 print(mpl.__version__)
 abs_path = "C:/Users/Marvin/Desktop/Portfolio/soccer/bayern-kauft-buli-kaputt/buli-cl-teams-zugaenge.csv"
 img_base_path = "C:/Users/Marvin/Desktop/Portfolio/soccer/buli-logos/"
@@ -56,6 +56,11 @@ mpl.rcParams['ytick.color'] = textColor
 mpl.rcParams['xtick.labelsize'] = 10
 mpl.rcParams['ytick.labelsize'] = 10
 
+anz = anzahl_zugaenge["Aufnehmender-Verein"].unique().tolist()
+anz1 = anzahl_zugaenge.loc[anzahl_zugaenge["Abgebende-Liga"] == "Bundesliga", "Unnamed: 0"].tolist()
+anz2 = anzahl_zugaenge.loc[anzahl_zugaenge["Abgebende-Liga"] == "2. Bundesliga", "Unnamed: 0"].tolist()
+team_list = [team_dict[i] for i in anz]
+
 def plot_differenz_mw_abloese(df):
     fig, ax = plt.subplots(figsize=(8,8))
     fig.set_facecolor(background)
@@ -84,14 +89,47 @@ def plot_differenz_mw_abloese(df):
     plt.tight_layout()
     plt.show()
     
-plot_differenz_mw_abloese(asdf)    
+# plot_differenz_mw_abloese(asdf)    
+
+def plot_marktwert_und_abloese(df):
+    plt.style.use('dark_background')
+    fig, ax = plt.subplots(figsize=(8,8))
+    fig.set_facecolor(background)
+    ax.patch.set_facecolor(background)
+    ax.grid(axis="y", ls="dotted",lw="0.5",color="lightgrey", zorder=1)
+    # colormap = ["#b3de69","#b3de69","#b3de69","#b3de69","#b3de69","#fa8174","#b3de69","#fa8174"]
+    
+    x = np.arange(8)
+    width = 0.35
+    bars1 = ax.bar(x-width/2, width=width, height=sum_marktwert_ablöse_zugaenge_de["Marktwert"].tolist(), color= '#482677', label='Bundesliga',zorder=2)
+    bars2 = ax.bar(x+width/2, width=width, height=sum_marktwert_ablöse_zugaenge_de["Ablöse"].tolist(),color='#dce319', label='Bundesliga',zorder=2)
+
+    ax.set_xlabel("Aufnehmender Verein", fontfamily=title_font, fontweight="bold", fontsize=12, color=textColor)
+    ax.set_ylabel("in €", fontfamily=title_font, fontweight="bold", fontsize=12, color=textColor)
+    # xlabels = [team_dict[i] for i in anz]
+    team_list.insert(0, "new")
+    ax.set_xticklabels(team_list)
+    ylabels = ['{:,.0f}'.format(y) + ' Mio.' for y in ax.get_yticks()/1000000]
+    ax.set_yticklabels(ylabels)
+    for i, j in enumerate(anz):
+        path = img_base_path + j+".png"
+        ab = AnnotationBbox(OffsetImage(plt.imread(path),zoom=0.08), (i, 20000000), frameon=False)
+        ax.add_artist(ab)
+        
+    HighlightText(x=0.15, y=1.05,
+              s="Gesamt <Marktwert> und <Ablöse> für Zugänge aus Vereinen \nder (2.) Bundesliga, 10/11 - 20/21",  fontsize=14, fontweight="bold",
+              highlight_textprops=[{"color": '#482677'}, #['#8dd3c7', '#feffb3', '#bfbbd9', '#fa8174'
+                                   {"color": '#dce319'}],
+              annotationbbox_kw={'boxcoords': fig.transFigure})
+    
+    # ax.set_title("Gesamt Marktwert und Ablöse für Zugänge aus Vereinen \nder 1. Bundesliga und 2. Bundesliga, 10/11 - 20/21", fontsize=14, fontweight="bold", color = textColor)
+    fig.text(0.6, -0.01, "Created by Marvin Springer / Data by transfermarkt.de",
+        fontstyle="italic",fontsize=8, fontfamily=body_font, color=textColor)
+    plt.tight_layout()
+    plt.show()
+plot_marktwert_und_abloese(df)
 
 
-
-anz = anzahl_zugaenge["Aufnehmender-Verein"].unique().tolist()
-anz1 = anzahl_zugaenge.loc[anzahl_zugaenge["Abgebende-Liga"] == "Bundesliga", "Unnamed: 0"].tolist()
-anz2 = anzahl_zugaenge.loc[anzahl_zugaenge["Abgebende-Liga"] == "2. Bundesliga", "Unnamed: 0"].tolist()
-team_list = [team_dict[i] for i in anz]
 def anzahl_zugaenge_buli(df):
     fig, ax = plt.subplots(figsize=(8,8))
     fig.set_facecolor(background)
@@ -143,9 +181,9 @@ def anzahl_zugaenge_buli(df):
     plt.tight_layout()
     plt.show()
 # anzahl_zugaenge_buli(anzahl_zugaenge)
-x_de = sum_marktwert_ablöse_zugaenge_de["Marktwert"].tolist()
-y_de = sum_marktwert_ablöse_zugaenge_de["Ablöse"].tolist()
-names_de = sum_marktwert_ablöse_zugaenge_de.index.tolist()
+# x_de = sum_marktwert_ablöse_zugaenge_de["Marktwert"].tolist()
+# y_de = sum_marktwert_ablöse_zugaenge_de["Ablöse"].tolist()
+# names_de = sum_marktwert_ablöse_zugaenge_de.index.tolist()
 
 def scatter_plot_mw_abloese(x, y, labels):
     fig, ax = plt.subplots(figsize=(8,8))
@@ -197,9 +235,9 @@ def scatter_plot_mw_abloese(x, y, labels):
     plt.show()
 
 #marktwert-ablöse-vereine
-scatter_plot_mw_abloese(x_de, y_de, names_de)
-x = np.arange(10)
-y = np.arange(10)
-p = plt.plot(x,y,x,y+1,x,y+2, x,y+3, x,y+4, x,y+5, x,y+6,x,y+7) 
-for i in range(8):
-    print(p[i].get_color())
+# scatter_plot_mw_abloese(x_de, y_de, names_de)
+# x = np.arange(10)
+# y = np.arange(10)
+# p = plt.plot(x,y,x,y+1,x,y+2, x,y+3, x,y+4, x,y+5, x,y+6,x,y+7) 
+# for i in range(8):
+#     print(p[i].get_color())

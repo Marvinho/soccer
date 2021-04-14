@@ -63,13 +63,13 @@ team_list = [team_dict[i] for i in anz]
 
 def plot_waffle_anzahl_buli_zugaenge():
 
-    fig = plt.figure(FigureClass=Waffle,rows=5,icons='user',font_size= 12,figsize=(12,8),plots={
+    fig = plt.figure(FigureClass=Waffle,rows=5,icons='user',font_size= 12,figsize=(12,6),colors=['#8dd3c7', '#feffb3'], plots={
         '331': {
             'values': [anz_buli1[0], anz_buli2[0]],
             'title': {"y":-0.2,'label': 'Gesamt: 32','loc': 'left',"fontfamily":body_font,"fontsize":12,"color":textColor},
             },
         331: {
-            "values": [1],
+            "values": [0, 0],
             "title": {"y":1,'label': 'Bayer 04 Leverkusen','loc': 'left',"fontfamily":title_font,"fontweight":"bold","fontsize":12,"color":textColor}
             },
         '332': {
@@ -104,31 +104,31 @@ def plot_waffle_anzahl_buli_zugaenge():
             "legend": {'loc': 'right', 'bbox_to_anchor': (2.5,0.5),'framealpha': 0,'fontsize': 16,"labelcolor":textColor}
             },
         338: {
-            'values': [0],
+            'values': [0, 0],
             'title': {"y":-0.2,'label': 'Gesamt: 32','loc': 'left',"fontfamily":title_font, "fontsize":12,"color":textColor},
             },
         337: {
-            'values': [0],
-            'title': {"y":-0.2,'label': 'Gesamt: 32','loc': 'left',"fontfamily":title_font, "fontsize":12,"color":textColor},
+            'values': [0, 0],
+            'title': {"y":-0.2,'label': 'Gesamt: 31','loc': 'left',"fontfamily":title_font, "fontsize":12,"color":textColor},
             }, 
         336: {
-            'values': [0],
+            'values': [0, 0],
             'title': {"y":-0.2,'label': 'Gesamt: 22','loc': 'left',"fontfamily":title_font, "fontsize":12,"color":textColor},
             }, 
         335: {
-            'values': [0],
+            'values': [0, 0],
             'title': {"y":-0.2,'label': 'Gesamt: 39','loc': 'left',"fontfamily":title_font, "fontsize":12,"color":textColor},
             }, 
         334: {
-            'values': [0],
+            'values': [0, 0],
             'title': {"y":-0.2,'label': 'Gesamt: 23','loc': 'left',"fontfamily":title_font, "fontsize":12,"color":textColor},
             }, 
         333: {
-            'values': [0],
+            'values': [0, 0],
             'title': {"y":-0.2,'label': 'Gesamt: 22','loc': 'left',"fontfamily":title_font, "fontsize":12,"color":textColor},
             }, 
         332: {
-            'values': [0],
+            'values': [0, 0],
             'title': {"y":-0.2,'label': 'Gesamt: 40','loc': 'left',"fontfamily":title_font, "fontsize":12,"color":textColor},
             }, 
         },
@@ -136,6 +136,8 @@ def plot_waffle_anzahl_buli_zugaenge():
     fig.set_facecolor(background)
     fig.patch.set_facecolor(background)
     fig.suptitle(t="Anzahl Zugänge aus Vereinen der (2.)Bundesliga, 10/11-20/21",x=0.5, y=1.01,va="center", fontweight ="bold", fontsize=16, c=textColor)
+    fig.text(0.7, 0.05, "Created by Marvin Springer / Data by transfermarkt.de",
+        fontstyle="italic",fontsize=8, fontfamily=body_font, color=textColor)
     # ax = fig.add_axes([0,0.95,0.75,0.15]) # badge
     # ax.axis("off")
 
